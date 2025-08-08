@@ -1,2 +1,7 @@
-This is my first hackathon project
-AI Creative Language Translator, using openai api and chatgpt ai
+Download required dependencies from app.py and translator.py
+use a new OpenAI API key, replace it in .env and translator.py
+(Commented code in translator.py is our gradio version, comment other block of code and run with gradio)
+
+https://huggingface.co/spaces/praans/hello_worlders ---> Website Version
+
+Launch from terminal using : "uvicorn app:app --reload" in the respective directory
