@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from prompt_templates import build_prompt
 
 load_dotenv()
-client = openai.OpenAI(api_key='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')
+client = openai.OpenAI(api_key="OPENAI_API_KEY")
 
 def translate_text(input_text, target_language, style, tone):
     prompt = build_prompt(input_text, target_language, style, tone)
