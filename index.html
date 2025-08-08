@@ -5,93 +5,280 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Creative Language Translator</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      max-width: 800px;
+    :root {
+      --primary-color: #0066ff;
+      --light-bg: #f9f9f9;
+      --light-card: #ffffff;
+      --light-text: #222;
+      --light-output: #f0f4ff;
+
+      --dark-bg: #1e1e1e;
+      --dark-card: #2c2c2c;
+      --dark-text: #eee;
+      --dark-output: #333;
+
+      --overlay-dark: rgba(0, 0, 0, 0.55);
     }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 20px;
+
+    * {
+      box-sizing: border-box;
     }
-    textarea, input, select {
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.light {
+      background-image: url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: var(--light-bg);
+      color: var(--light-text);
+    }
+
+    body.dark {
+      background-color: var(--dark-bg);
+      background-image: none;
+      color: var(--dark-text);
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      font-size: 1rem;
+      background: var(--overlay-dark);
+      z-index: 0;
     }
-    button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 1rem;
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 60px auto;
+      background: var(--light-card);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark .container {
+      background: var(--dark-card);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      background-color: #ccc;
+      border-radius: 30px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    input:checked + .slider {
+      background-color: #0066ff;
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    .icon {
+      font-size: 1.1rem;
+      user-select: none;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 20px;
+      display: block;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    textarea:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2);
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0052cc;
+    }
+
     #output {
       margin-top: 30px;
-      background-color: #f0f0f0;
-      padding: 15px;
-      border-radius: 6px;
+      background-color: var(--light-output);
+      padding: 20px;
+      border-radius: 10px;
       white-space: pre-wrap;
+      font-size: 1.05rem;
+      color: #000;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark #output {
+      background-color: var(--dark-output);
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+        margin: 20px;
+      }
     }
   </style>
 </head>
-<body>
+<body class="light">
 
-  <h1>Creative Language Translator</h1>
+  <!-- 🌙 / ☀️ Toggle Switch -->
+  <div class="theme-toggle">
+    <label class="switch">
+      <span class="icon">🌙</span>
+      <input type="checkbox" id="themeSwitch" onclick="toggleDarkMode()">
+      <span class="slider"></span>
+      <span class="icon">☀️</span>
+    </label>
+  </div>
 
-  <label for="input_text">Input Text:</label>
-  <textarea id="input_text" rows="4" placeholder="Enter your text..."></textarea>
+  <!-- Translator UI -->
+  <div class="container">
+    <h1>Creative Language Translator</h1>
 
-  <label for="target_language">Target Language:</label>
-  <input id="target_language" type="text" placeholder="e.g. Spanish" />
+    <label for="input_text">Input Text:</label>
+    <textarea id="input_text" rows="4" placeholder="Enter your text..."></textarea>
 
-  <label for="style">Style:</label>
-  <input id="style" type="text" placeholder="e.g. Formal, Casual" />
+    <label for="target_language">Target Language:</label>
+    <input id="target_language" type="text" placeholder="e.g. Spanish" />
 
-  <label for="tone">Tone:</label>
-  <input id="tone" type="text" placeholder="e.g. Polite, Friendly" />
+    <label for="style">Style:</label>
+    <input id="style" type="text" placeholder="e.g. Formal, Casual" />
 
-  <button onclick="submitTranslation()">Translate</button>
+    <label for="tone">Tone:</label>
+    <input id="tone" type="text" placeholder="e.g. Polite, Friendly" />
 
-  <div id="output"></div>
+    <button onclick="submitTranslation()">Translate</button>
 
+    <div id="output"></div>
+  </div>
+
+  <!-- JavaScript -->
   <script>
+    // Toggle theme
+    function toggleDarkMode() {
+      const body = document.body;
+      const themeSwitch = document.getElementById("themeSwitch");
+
+      const newTheme = themeSwitch.checked ? "dark" : "light";
+      body.className = newTheme;
+      localStorage.setItem("theme", newTheme);
+    }
+
+    // Restore saved theme
+    (function () {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      const themeSwitch = document.getElementById("themeSwitch");
+
+      document.body.className = savedTheme;
+      themeSwitch.checked = savedTheme === "dark";
+    })();
+
+    // Translate handler
     async function submitTranslation() {
       const input_text = document.getElementById("input_text").value;
       const target_language = document.getElementById("target_language").value;
       const style = document.getElementById("style").value;
       const tone = document.getElementById("tone").value;
 
-      const response = await fetch("http://127.0.0.1:8000/translate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          input_text,
-          target_language,
-          style,
-          tone
-        })
-      });
-
-      const data = await response.json();
       const outputDiv = document.getElementById("output");
+      outputDiv.innerHTML = "Translating... Please wait.";
 
-      if (data.translated_text) {
-        outputDiv.innerHTML = `<strong>Translated Text:</strong><br>${data.translated_text}`;
-      } else {
-        outputDiv.innerHTML = `<strong>Error:</strong> ${JSON.stringify(data)}`;
+      try {
+        const response = await fetch("http://127.0.0.1:8000/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input_text, target_language, style, tone })
+        });
+
+        const data = await response.json();
+
+        if (data.translated_text) {
+          outputDiv.innerHTML = `<strong>Translated Text:</strong><br><br>${data.translated_text}`;
+        } else {
+          outputDiv.innerHTML = `<strong>Error:</strong> ${JSON.stringify(data.detail || data)}`;
+        }
+      } catch (err) {
+        outputDiv.innerHTML = `<strong>Fetch Error:</strong> ${err.message}`;
       }
     }
   </script>
 
 </body>
 </html>
-
-
-
-
-
-
